@@ -14,6 +14,10 @@ namespace Symbolics.Tests
         [TestCase("a + b", false)]
         [TestCase("1.2+2.3", false)]
         [TestCase("1.2 + 2.3", false)]
+        [TestCase("a-b", false)]
+        [TestCase("a - b", false)]
+        [TestCase("1.2-2.3", false)]
+        [TestCase("1.2 - 2.3", false)]
         [TestCase("a=b", false)]
         public void ParseSymbol(string equation, bool IsSymbol)
         {
@@ -30,6 +34,10 @@ namespace Symbolics.Tests
         [TestCase("a + b", true)]
         [TestCase("1.2+2.3", true)]
         [TestCase("1.2 + 2.3", true)]
+        [TestCase("a-b", false)]
+        [TestCase("a - b", false)]
+        [TestCase("1.2-2.3", false)]
+        [TestCase("1.2 - 2.3", false)]
         [TestCase("a=b", false)]
         public void ParseAddition(string equation, bool IsAddition)
         {
@@ -38,6 +46,26 @@ namespace Symbolics.Tests
             bool IsActuallyAddition = SUT.GetType() == typeof(Addition);
 
             Assert.That(IsActuallyAddition == IsAddition);
+        }
+
+        [TestCase("a", false)]
+        [TestCase("2.345", false)]
+        [TestCase("a+b", false)]
+        [TestCase("a + b", false)]
+        [TestCase("1.2+2.3", false)]
+        [TestCase("1.2 + 2.3", false)]
+        [TestCase("a-b", true)]
+        [TestCase("a - b", true)]
+        [TestCase("1.2-2.3", true)]
+        [TestCase("1.2 - 2.3", true)]
+        [TestCase("a=b", false)]
+        public void ParseSubtraction(string equation, bool IsSubtraction)
+        {
+            Expression SUT = Expression.Create(equation);
+
+            bool IsActuallySubtraction = SUT.GetType() == typeof(Subtraction);
+
+            Assert.That(IsActuallySubtraction == IsSubtraction);
         }
 
         [TestCase("a", false)]

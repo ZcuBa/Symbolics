@@ -21,6 +21,15 @@ namespace Symbolics
             return false;
         }
 
+        public enum ParseOrders
+        {
+            None = 0,
+            Subtraction,
+            Addition
+        }
+
+        protected ParseOrders ParseOrder = ParseOrders.None;
+
         public virtual double Calculate()
         {
             throw new NotImplementedException(this.GetType() + "does not implement a Calculate method!");
@@ -51,19 +60,41 @@ namespace Symbolics
                 }
             }
 
-            Expression expression = null; 
-
+            Expression expression = null;
+            var InnerExceptions = new List<Exception>();
             try
             {
                 expression = Expressions.Single(e => e.CanParse(equation));
             }
             catch
             {
-                throw new Exception("I was unable to determine which expression node to create from this string: " + equation);
+                InnerExceptions.Add(
+                    new Exception("I was unable to determine which single expression node to create from this string: " + equation)
+                );
+            }
+
+
+            if(expression == null)
+            {
+                try
+                {
+                    var expressions = Expressions.Where(e => e.CanParse(equation));
+
+                    expression = expressions.OrderByDescending(e => e.ParseOrder).First();
+                }
+                catch
+                {
+                    InnerExceptions.Add(
+                        new Exception("I was unable to determine which single expression node to create from this string: " + equation)
+                    );
+                }
             }
 
             try
             {
+                if (expression == null)
+                    throw new AggregateException("the string did not allow me to determine where to begin, see inner exceptions for details.", InnerExceptions);
+
                 return expression.Parse(equation);
             }
             catch (Exception ex)

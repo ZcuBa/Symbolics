@@ -12,7 +12,11 @@ namespace Symbolics.Tests
     {
 
         [TestCase("1.234 + 2.345", 3.579, 0.001)]
+        [TestCase("1.234 - 2.345", -1.111, 0.001)]
         [TestCase("1.234 + 2.345 + 3.456", 7.035, 0.001)]
+        [TestCase("1.234 - 2.345 - 3.456", -4.567, 0.001)]
+        [TestCase("1.234 + 2.345 - 3.456", 0.123, 0.001)]
+        [TestCase("1.234 - 2.345 + 3.456", 2.345, 0.001)]
         public void CalculatesValue(string equation, double expectedvalue, double tolerance)
         {
             Expression SUT = Expression.Create(equation);

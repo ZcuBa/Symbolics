@@ -10,6 +10,8 @@ namespace Symbolics
         public Addition()
         {
             Operator = "+";
+            ParseOrder = ParseOrders.Addition;
+
         }
 
         public override double Calculate()
